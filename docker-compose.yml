@@ -1,0 +1,40 @@
+version: '3'
+
+services:            
+
+  mysqldb:
+    image: mysql:8
+    container_name: mysqldb
+    environment:
+      MYSQL_ROOT_PASSWORD: 2435932
+      MYSQL_DATABASE: kitchen
+    ports:
+      - 3306:3306
+    networks:
+     - backend
+  springapi:
+    image: mohamedraja/phase4:kitchen-api
+    container_name: springapi
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/kitchen
+    ports:
+      - 9000:9000
+    depends_on:
+      - mysqldb
+    networks:
+      - backend
+      - frontend
+  angular:
+    image: mohamedraja/phase4:kitchen-angular
+    container_name: angular
+    ports: 
+      - 4200:80
+    depends_on:
+      - springapi
+    networks:
+      - frontend
+volumes:
+  dockerAngularSpringDatabaseData:    
+networks:
+  backend:
+  frontend:
